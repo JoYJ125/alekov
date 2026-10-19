@@ -317,7 +317,59 @@ export function createStudentView() {
       return root;
     },
     renderVulnerabilities() { return '학생 구현 대기: 정확한 설치 버전·OSV 출처·조회 시각·부분 결과·조회 실패를 구분하세요.'; },
-    renderAiConnection() { return '학생 구현 대기: 모델 응답 점검과 실제 사건 설명을 구분하고 AI 오류·취소·수동 복구를 안내하세요.'; },
+    renderAiConnection({ status, mode, data, error, checkedAt, explanationAccepted } = {}) {
+      const root = document.createElement('section');
+      root.setAttribute('aria-label', '앱 내부 AI 연결 상태');
+      const line = (value) => {
+        const p = document.createElement('p');
+        p.textContent = String(value);
+        root.appendChild(p);
+      };
+      if (mode === 'demo') line('예제 자료: 실제 AI 연결 결과가 아닙니다.');
+      if (mode === 'disconnected') line('연결 없음: 실제 서버와 연결되지 않았습니다.');
+      if (mode === 'unknown') line('연결 상태 확인 불가');
+      if (status === 'idle') {
+        line('AI 연결 점검 전');
+        line('계정과 AI 연결을 확인한 뒤 현재 API 연결 점검 버튼을 직접 누르세요.');
+        return root;
+      }
+      if (status === 'loading') {
+        line('AI 연결 점검 중');
+        line('이전 점검 결과는 현재 결과가 아닙니다.');
+        return root;
+      }
+      if (status === 'ok') {
+        const auth = data?.audienceAuthorization;
+        if (data?.transportChecked !== true || (auth !== 'test' && auth !== 'verified')) {
+          line('AI 연결 결과 확인 불가: 점검 응답이 유효하지 않습니다.');
+          return root;
+        }
+        line(auth === 'test' ? '시험 연결 점검(test)' : '앱 권한 확인 후 점검(verified)');
+        line('모델 수: ' + (data.modelCount ?? '확인 불가'));
+        line('점검 시각: ' + (checkedAt ?? '확인 불가'));
+        line('연결 점검 결과이며 사건 설명은 아직 실행하지 않았습니다.');
+        return root;
+      }
+      if (status === 'error') {
+        const code = String(error?.code ?? 'UNKNOWN');
+        const advice = (() => {
+          if (/CANCEL|ABORT/i.test(code)) return '점검이 취소되었습니다. 이전 결과는 현재 결과가 아닙니다.';
+          if (/MODEL.*(NONE|EMPTY|UNAVAILABLE|NOT_FOUND)|NO_MODEL/i.test(code)) return '사용 가능한 모델이 없습니다. 담당자에게 모델 허용 설정을 확인하세요.';
+          if (/TIMEOUT|TIMED_OUT|NETWORK|FETCH|RATE_LIMIT|TOO_MANY|429/i.test(code)) return '요청 제한·시간 초과·네트워크 상태를 확인하고 잠시 뒤 직접 다시 점검하세요.';
+          if (/HOURS|TIME_WINDOW|OUT_OF_HOURS|SCHEDULE/i.test(code)) return '이용 시간이 아닙니다. 이용 시간을 확인하세요.';
+          if (/QUOTA|USAGE|BUDGET|LIMIT_EXCEEDED|CAPACITY/i.test(code)) return '수업 사용량 또는 이용 한도에 도달했습니다. 담당자에게 확인하세요.';
+          if (/FORBIDDEN|DENIED|ACCESS_RESTRICTED|403/i.test(code)) return '접근이 제한되었습니다. 계정 연결과 담당자 확인이 필요합니다.';
+          if (/UNAUTHORIZED|AUTH|TOKEN_EXPIRED|401/i.test(code)) return '인증을 확인할 수 없습니다. 계정 연결을 다시 확인하고 담당자에게 문의하세요.';
+          return '앱 권한이 준비되지 않았거나 연결 상태를 확인할 수 없습니다. 담당자에게 계정 연결과 앱 권한을 확인하세요.';
+        })();
+        line('AI 연결 점검 실패 (' + code + '): ' + (error?.message ?? '확인할 수 없습니다.'));
+        line(advice);
+        line('사건 설명은 실행된 것으로 확인되지 않았습니다.');
+        return root;
+      }
+      line('AI 연결 상태 확인 불가');
+      return root;
+    },
     renderExplanation() { return '학생 구현 대기: 선택한 사건의 근거·규칙·현재 상태와 AI 설명을 연결하세요. 제안은 자동 실행하지 않습니다.'; },
     renderAction() { return '학생 구현 대기: 현재 사건·조치·실제 대상·사람 확인·ACK와 원천 효과·unknown을 구분하세요.'; },
   };
