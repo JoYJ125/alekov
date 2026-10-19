@@ -63,7 +63,52 @@ export function createStudentView() {
       }
       return root;
     },
-    renderDecision() { return '학생 구현 대기: 서버의 판정과 이유를 연결하세요.'; },
+    renderDecision({ status, mode, data, error, appId } = {}) {
+      const root = document.createElement('section');
+      root.setAttribute('aria-label', '업무 앱 접근 판정');
+      const line = (value) => {
+        const p = document.createElement('p');
+        p.textContent = String(value);
+        root.appendChild(p);
+      };
+      if (mode === 'demo') line('예제 자료: 실제 접근 판정이 아닙니다.');
+      if (mode === 'disconnected') line('연결 없음: 실제 서버에 연결되지 않았습니다.');
+      if (mode === 'unknown') line('연결 상태 확인 불가');
+
+      if (status === 'idle') {
+        line('업무 앱을 선택하고 접근 요청을 하세요.');
+        return root;
+      }
+      if (status === 'loading') {
+        line('접근 판정 확인 중입니다.');
+        return root;
+      }
+      if (status === 'error') {
+        line('접근 요청 실패: ' + (error?.message ?? '서버 응답을 확인할 수 없습니다.'));
+        line('요청 실패는 접근 거부(deny) 판정이 아닙니다.');
+        return root;
+      }
+      if (status !== 'ok' || !data || typeof data !== 'object') {
+        line('판정 확인 불가(unknown): 검증된 응답이 없습니다.');
+        return root;
+      }
+
+      const decisions = {
+        allow: '접근 허용',
+        deny: '접근 거부',
+        challenge: '추가 인증 또는 확인 필요',
+        unknown: '판정 확인 불가',
+      };
+      const decision = Object.hasOwn(decisions, data.decision) ? data.decision : 'unknown';
+      line('업무 앱 ID: ' + (data.appId ?? appId ?? '확인 불가'));
+      line('접근 판정: ' + decisions[decision] + ' (' + decision + ')');
+      line('판정 이유: ' + (data.reason ?? '확인 불가'));
+      line('판정 시각: ' + (data.checkedAt ?? '확인 불가'));
+      if (decision === 'allow') line('정책상 접근 허용이며 실제 업무 앱 접속 성공을 보장하지 않습니다.');
+      if (decision === 'challenge') line('추가 인증 또는 확인이 필요합니다. 이 앱은 해당 절차를 대신 수행하지 않습니다.');
+      if (decision === 'unknown') line('접근 허용 여부를 확인할 수 없습니다.');
+      return root;
+    },
     renderEvents() { return '학생 구현 대기: 본인 접속·XDR 기록을 연결하세요.'; },
     renderStatus() { return '학생 구현 대기: 기기·세션·알림과 연결 점검 상태를 구분하세요.'; },
     renderVulnerabilities() { return '학생 구현 대기: 정확한 설치 버전·OSV 출처·조회 시각·부분 결과·조회 실패를 구분하세요.'; },
