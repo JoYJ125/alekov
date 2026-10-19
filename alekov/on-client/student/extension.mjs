@@ -215,6 +215,14 @@ export function createStudentView() {
             add(detail, 'p', '접속 상태: ' + stateText(accessLabels, event.state.access));
             add(detail, 'p', '세션 상태: ' + stateText(sessionLabels, event.state.session));
             add(detail, 'p', '기기 상태: ' + stateText(deviceLabels, event.state.device));
+            if (Array.isArray(event.supportedActions)) {
+              for (const action of event.supportedActions) {
+                add(detail, 'p', '조치 실행 연결은 준비 중입니다.');
+                const buttonUnsupported = add(detail, 'button', String(action) + ' 미지원');
+                buttonUnsupported.type = 'button';
+                buttonUnsupported.disabled = true;
+              }
+            }
             button.setAttribute('aria-expanded', 'true');
           });
           list.appendChild(item);
