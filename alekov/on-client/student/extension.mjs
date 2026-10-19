@@ -224,7 +224,90 @@ export function createStudentView() {
       renderList();
       return root;
     },
-    renderStatus() { return '학생 구현 대기: 기기·세션·알림과 연결 점검 상태를 구분하세요.'; },
+    renderStatus({ devices, sessions, notifications, diagnostics, mode } = {}) {
+      const root = document.createElement('section');
+      root.setAttribute('aria-label', '기기·세션·알림·진단 상태');
+      const add = (parent, tag, value) => {
+        const node = document.createElement(tag);
+        node.textContent = String(value);
+        parent.appendChild(node);
+        return node;
+      };
+      if (mode === 'demo') add(root, 'p', '예제 자료: 실제 계정의 상태가 아닙니다.');
+      if (mode === 'disconnected') add(root, 'p', '연결 없음: 실제 서버와 연결되지 않았습니다.');
+      if (mode === 'unknown') add(root, 'p', '연결 상태 확인 불가');
+
+      const deviceLabels = { compliant: '보안 기준 충족', noncompliant: '보안 기준 미충족', unknown: '확인 불가' };
+      const sessionLabels = { active: '활성', expired: '만료', revoked: '철회됨', unknown: '확인 불가' };
+      const stateText = (labels, value) => (labels[value] ?? '확인 불가') + '(' + (value ?? 'unknown') + ')';
+      const renderResource = (title, resource, emptyText, labels, rowText) => {
+        add(root, 'h3', title);
+        if (resource?.status === 'loading') {
+          add(root, 'p', title + ' 정보를 불러오는 중입니다.');
+        } else if (resource?.status === 'error') {
+          add(root, 'p', title + ' 정보를 불러오지 못했습니다: ' +
+            (resource.error?.message ?? '조회 실패'));
+          add(root, 'p', '다시 시도는 위쪽 다시 불러오기 버튼을 직접 누르세요.');
+        } else if (resource?.status === 'ok' && Array.isArray(resource.data)) {
+          if (resource.data.length === 0) add(root, 'p', emptyText);
+          for (const item of resource.data) add(root, 'p', rowText(item) + ' / 상태: ' + stateText(labels, item.status));
+        } else {
+          add(root, 'p', title + ' 정보 확인 불가');
+        }
+      };
+      renderResource('기기', devices, '등록된 기기가 없습니다.', deviceLabels,
+        (device) => '기기: ' + (device.label ?? device.id ?? '확인 불가'));
+      add(root, 'p', '등록 기기는 현재 계정의 회수되지 않은 기기 최대 100개까지 확인합니다.');
+      renderResource('세션', sessions, '현재 연결이 없습니다.', sessionLabels,
+        (session) => '세션 ID: ' + (session.id ?? '확인 불가'));
+      add(root, 'p', '세션 조회는 지금 검증된 연결 하나만 대상으로 하며 지난 세션 전체 목록이 아닙니다.');
+
+      add(root, 'h3', '알림');
+      if (!Array.isArray(notifications) || notifications.length === 0) {
+        add(root, 'p', '주의할 알림이 없습니다.');
+      } else {
+        for (const notice of notifications) {
+          add(root, 'p', '자료: ' + (notice.resource ?? '확인 불가') +
+            ' / 코드: ' + (notice.code ?? '확인 불가') +
+            ' / 내용: ' + (notice.message ?? '확인 불가'));
+        }
+      }
+
+      add(root, 'h3', '진단 정보');
+      const safeKeys = ['requestId', 'component', 'version', 'checkedAt'];
+      const safeDiagnostics = {};
+      if (diagnostics?.status === 'ok' && diagnostics.data && typeof diagnostics.data === 'object') {
+        for (const key of safeKeys) safeDiagnostics[key] = diagnostics.data[key] ?? '확인 불가';
+        safeDiagnostics['engine.mode'] = diagnostics.data.engine?.mode ?? '확인 불가';
+        safeDiagnostics['engine.code'] = diagnostics.data.engine?.code ?? '확인 불가';
+        for (const [key, value] of Object.entries(safeDiagnostics)) add(root, 'p', key + ': ' + String(value));
+      } else if (diagnostics?.status === 'loading') {
+        add(root, 'p', '진단 정보를 불러오는 중입니다.');
+      } else if (diagnostics?.status === 'error') {
+        add(root, 'p', '진단 정보를 불러오지 못했습니다: ' +
+          (diagnostics.error?.message ?? '조회 실패'));
+        add(root, 'p', '다시 시도는 위쪽 다시 불러오기 버튼을 직접 누르세요.');
+      } else {
+        add(root, 'p', '진단 정보 확인 불가');
+      }
+      add(root, 'p', '도움 요청 시 비밀 정보가 아닌 진단 항목만 복사할 수 있습니다.');
+      const copy = add(root, 'button', '도움정보 복사');
+      copy.type = 'button';
+      copy.disabled = diagnostics?.status !== 'ok';
+      copy.addEventListener('click', async () => {
+        if (diagnostics?.status !== 'ok') return;
+        const payload = Object.entries(safeDiagnostics).map(([key, value]) => key + ': ' + String(value)).join('\\n');
+        try {
+          await navigator.clipboard.writeText(payload);
+          feedback.textContent = '도움정보를 복사했습니다.';
+        } catch {
+          feedback.textContent = '도움정보를 복사하지 못했습니다. 브라우저의 클립보드 권한을 확인하세요.';
+        }
+      });
+      const feedback = add(root, 'p', '');
+      feedback.setAttribute('role', 'status');
+      return root;
+    },
     renderVulnerabilities() { return '학생 구현 대기: 정확한 설치 버전·OSV 출처·조회 시각·부분 결과·조회 실패를 구분하세요.'; },
     renderAiConnection() { return '학생 구현 대기: 모델 응답 점검과 실제 사건 설명을 구분하고 AI 오류·취소·수동 복구를 안내하세요.'; },
     renderExplanation() { return '학생 구현 대기: 선택한 사건의 근거·규칙·현재 상태와 AI 설명을 연결하세요. 제안은 자동 실행하지 않습니다.'; },
