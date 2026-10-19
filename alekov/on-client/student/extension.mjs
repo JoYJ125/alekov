@@ -199,6 +199,7 @@ export function createStudentView() {
           button.addEventListener('click', () => {
             if (button.getAttribute('aria-expanded') === 'true') {
               detail.replaceChildren();
+              detail.removeAttribute('data-student-event-detail');
               button.setAttribute('aria-expanded', 'false');
               return;
             }
