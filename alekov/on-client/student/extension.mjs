@@ -370,7 +370,37 @@ export function createStudentView() {
       line('AI 연결 상태 확인 불가');
       return root;
     },
-    renderExplanation() { return '학생 구현 대기: 선택한 사건의 근거·규칙·현재 상태와 AI 설명을 연결하세요. 제안은 자동 실행하지 않습니다.'; },
+    renderExplanation({ event, explanation, checkedAt } = {}) {
+      const root = document.createElement('section');
+      root.setAttribute('aria-label', '선택한 사건의 AI 설명');
+      const line = (value) => {
+        const p = document.createElement('p');
+        p.textContent = String(value);
+        root.appendChild(p);
+      };
+      if (!event?.id) {
+        line('보안 기록에서 설명할 사건을 먼저 선택하세요.');
+        return root;
+      }
+      if (explanation?.status === 'loading') {
+        line('사건 ' + event.id + '의 AI 설명 요청 중입니다.');
+        return root;
+      }
+      if (explanation?.status === 'error') {
+        line('AI 설명 실패 (' + (explanation.error?.code ?? 'UNKNOWN') + '): ' +
+          (explanation.error?.message ?? '설명 결과를 확인할 수 없습니다.'));
+        line('보안 기록은 그대로입니다. AI 설명 실패는 보안 기록의 변경이나 조치 실행을 뜻하지 않습니다.');
+        return root;
+      }
+      if (explanation?.status === 'ok' && typeof explanation.data?.summary === 'string') {
+        root.setAttribute('data-student-explanation-event', String(event.id));
+        line('사건 ID: ' + event.id);
+        line('AI 설명(참고용): ' + explanation.data.summary);
+        return root;
+      }
+      line('사건 ' + event.id + '의 AI 설명은 아직 확인되지 않았습니다.');
+      return root;
+    },
     renderAction() { return '학생 구현 대기: 현재 사건·조치·실제 대상·사람 확인·ACK와 원천 효과·unknown을 구분하세요.'; },
   };
 }
