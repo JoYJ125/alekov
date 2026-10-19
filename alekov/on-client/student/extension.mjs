@@ -356,9 +356,9 @@ export function createStudentView() {
           if (/CANCEL|ABORT/i.test(code)) return '점검이 취소되었습니다. 이전 결과는 현재 결과가 아닙니다.';
           if (/MODEL.*(NONE|EMPTY|UNAVAILABLE|NOT_FOUND)|NO_MODEL/i.test(code)) return '사용 가능한 모델이 없습니다. 담당자에게 모델 허용 설정을 확인하세요.';
           if (/TIMEOUT|TIMED_OUT|NETWORK|FETCH|RATE_LIMIT|TOO_MANY|429/i.test(code)) return '요청 제한·시간 초과·네트워크 상태를 확인하고 잠시 뒤 직접 다시 점검하세요.';
-          if (/HOURS|TIME_WINDOW|OUT_OF_HOURS|SCHEDULE/i.test(code)) return '이용 시간이 아닙니다. 이용 시간을 확인하세요.';
-          if (/QUOTA|USAGE|BUDGET|LIMIT_EXCEEDED|CAPACITY/i.test(code)) return '수업 사용량 또는 이용 한도에 도달했습니다. 담당자에게 확인하세요.';
-          if (/FORBIDDEN|DENIED|ACCESS_RESTRICTED|403/i.test(code)) return '접근이 제한되었습니다. 계정 연결과 담당자 확인이 필요합니다.';
+          if (/HOURS|TIME_WINDOW|OUT_OF_HOURS|SCHEDULE|WB_CLCO_SESSION_CLOSED/i.test(code)) return '이용 시간이 아닙니다. 이용 시간을 확인하세요.';
+          if (/QUOTA|USAGE|BUDGET|LIMIT_EXCEEDED|LIMIT_REACHED|CAPACITY/i.test(code)) return '수업 사용량 또는 이용 한도에 도달했습니다. 담당자에게 확인하세요.';
+          if (/FORBIDDEN|DENIED|ACCESS_RESTRICTED|ACCESS_BLOCKED|403/i.test(code)) return '접근이 제한되었습니다. 계정 연결과 담당자 확인이 필요합니다.';
           if (/UNAUTHORIZED|AUTH|TOKEN_EXPIRED|401/i.test(code)) return '인증을 확인할 수 없습니다. 계정 연결을 다시 확인하고 담당자에게 문의하세요.';
           return '앱 권한이 준비되지 않았거나 연결 상태를 확인할 수 없습니다. 담당자에게 계정 연결과 앱 권한을 확인하세요.';
         })();
