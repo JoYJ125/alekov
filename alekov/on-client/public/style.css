@@ -246,3 +246,11 @@ button,.btn,input,select,textarea{border-radius:10px}
 #pc-log li{overflow-wrap:anywhere}
 @media(max-width:1050px){.pc-overview{grid-template-columns:1fr}}
 @media(max-width:650px){.pc-meter-row{grid-template-columns:1fr;gap:8px}.pc-status-head{align-items:flex-start;flex-direction:column}.pc-lower{grid-template-columns:1fr}}
+
+.windows-dashboard{margin:24px 0;min-width:0}
+.windows-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:14px 0}
+.windows-cards .pc-panel{min-width:0;overflow-wrap:anywhere}
+.windows-cards .pc-panel h3{margin-bottom:12px;color:var(--accent)}
+.windows-warning{padding:12px 16px;border:1px solid #8e742d;border-radius:12px;color:#f8d37e}
+#windows-history{overflow-wrap:anywhere;color:var(--muted)}
+@media(max-width:800px){.windows-cards{grid-template-columns:1fr}}
