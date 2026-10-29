@@ -25,15 +25,16 @@ export async function readWindowsStatus(){
   }
   try{
     const adapters=Object.entries(os.networkInterfaces()).flatMap(([name,entries])=>(entries||[]).filter(v=>!v.internal).map(v=>({name,family:v.family,address:v.address}))).slice(0,20);
-    const dns=dns.getServers().slice(0,8);
-    result.network={status:'ok',measuredAt:new Date().toISOString(),adapters,dns,unit:'개'};
+    const dnsServers=dns.getServers().slice(0,8);
+    result.network={status:'ok',measuredAt:new Date().toISOString(),adapters,dns:dnsServers,unit:'개'};
   }catch(e){result.network=unknown('네트워크 조회 실패: '+String(e.message).slice(0,100));}
   try{
     const profiles=await ps("$ErrorActionPreference='Stop'; @(Get-NetFirewallProfile | Select-Object Name,Enabled | ForEach-Object { [pscustomobject]@{name=[string]$_.Name; enabled=[bool]$_.Enabled} }) | ConvertTo-Json -Compress");
+    if(!profiles||Array.isArray(profiles)&&profiles.length===0)throw Error('방화벽 프로필이 반환되지 않았습니다');
     result.firewall={status:'ok',measuredAt:new Date().toISOString(),profiles:Array.isArray(profiles)?profiles:[profiles],readOnly:true};
   }catch(e){result.firewall=unknown(errorText(e));}
   try{
-    const script="$ErrorActionPreference='Stop'; $since=(Get-Date).AddHours(-24); $out=@(); foreach($log in @('System','Application')) { $items=@(Get-WinEvent -FilterHashtable @{LogName=$log;StartTime=$since;Level=@(2,3)} -ErrorAction SilentlyContinue); $out+= [pscustomobject]@{log=$log;warning=@($items | Where-Object Level -eq 3).Count;error=@($items | Where-Object Level -eq 2).Count} }; $out | ConvertTo-Json -Compress";
+    const script="$ErrorActionPreference='Stop'; $since=(Get-Date).AddHours(-24); $out=@(); foreach($log in @('System','Application')) { $items=@(Get-WinEvent -FilterHashtable @{LogName=$log;StartTime=$since;Level=@(2,3)} -ErrorAction Stop); $out+= [pscustomobject]@{log=$log;warning=@($items | Where-Object Level -eq 3).Count;error=@($items | Where-Object Level -eq 2).Count} }; $out | ConvertTo-Json -Compress";
     const counts=await ps(script);
     result.events={status:'ok',measuredAt:new Date().toISOString(),windowHours:24,unit:'건',counts:Array.isArray(counts)?counts:[counts],disclaimer:'Windows 경고·오류 건수는 운영체제 이벤트 통계이며, 침해나 공격 탐지 결과가 아닙니다.'};
   }catch(e){result.events=unknown(errorText(e));}
