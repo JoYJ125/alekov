@@ -24,6 +24,8 @@ export async function readPcStatus({wait=350}={}) {
     const free=Number(disk.bavail*disk.bsize)/1e9;
     if(!Number.isFinite(free))throw Error('disk');
     results.disk.value=round(free,2);
+    const total=Number(disk.blocks*disk.bsize)/1e9;
+    if(Number.isFinite(total)&&total>0)results.disk.total=round(total,2);
   }catch{results.disk.reason='프로젝트가 있는 디스크의 여유 공간을 읽지 못했습니다';}
   return {source:'local-os',measuredAt,results,notes:'메모리는 시스템 전체 사용량 추정치, 디스크는 프로젝트 폴더가 있는 볼륨의 가용 공간입니다.'};
 }
