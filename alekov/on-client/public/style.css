@@ -277,3 +277,26 @@ button,.btn,input,select,textarea{border-radius:10px}
 .windows-details dt{color:#b5c6d8}.windows-details dd{margin:0;overflow-wrap:anywhere;white-space:normal}
 .windows-details h3{font-size:.9rem}
 @media(max-width:650px){.windows-status-row{align-items:flex-start;flex-direction:column;gap:4px}.windows-status-row strong{text-align:left}.windows-details dl{grid-template-columns:1fr;gap:5px}.windows-panel-header{align-items:flex-start;flex-direction:column}}
+
+/* 홈페이지 실행 안내: 실제 실행 여부는 사용자 확인으로만 기록 */
+.run-guide{margin:24px 0;border:1px solid #2b626d;border-radius:18px;background:#0c1728;overflow:hidden;min-width:0}
+.run-guide-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px;border-bottom:1px solid #2b515c}
+.run-guide-head h2{font-size:1.18rem;margin:4px 0}.run-guide-head p{margin:4px 0;color:#a9bdcc;font-size:.88rem}
+.run-guide-badge{border:1px solid #a18538;border-radius:999px;color:#f2d27c;font-size:.75rem;padding:5px 10px;white-space:nowrap}
+.run-guide-columns{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px}
+.run-guide-panel{border:1px solid #2a505e;background:#101e30;border-radius:14px;padding:18px;min-width:0}
+.run-guide-panel h3,.run-guide-help h3{font-size:1rem;margin:0 0 12px}
+.run-guide-panel ol{padding-left:22px;line-height:1.9;font-size:.87rem}
+.run-guide-panel li{margin-bottom:8px;overflow-wrap:anywhere}
+.run-guide-panel code{white-space:normal;overflow-wrap:anywhere;color:#7be9d5}
+.run-guide-note{color:#b9c9d6;font-size:.78rem}
+.run-guide-check label{display:flex;gap:10px;align-items:flex-start;padding:10px 0;font-size:.88rem;cursor:pointer}
+.run-guide-check input{accent-color:#63e7c2;margin-top:3px;flex:none}
+#run-check-result{color:#f2d27c;font-size:.86rem;border-top:1px solid #2b515c;padding-top:12px}
+.run-guide-help{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 20px;border-top:1px solid #2b515c}
+.run-guide-help p{font-size:.84rem;color:#b8cad8;line-height:1.6}
+.run-guide-actions{display:flex;flex-direction:column;align-items:flex-start;gap:10px;flex-shrink:0}
+.run-guide-actions a{color:#75e5d1;font-size:.83rem}
+.run-guide :is(button,input,a):focus-visible{outline:3px solid #f2d27c;outline-offset:3px}
+@media(max-width:850px){.run-guide-columns{grid-template-columns:1fr}.run-guide-help{flex-direction:column;align-items:stretch}.run-guide-actions{flex-direction:row;flex-wrap:wrap}}
+@media(max-width:550px){.run-guide-head{flex-direction:column;align-items:flex-start}}
