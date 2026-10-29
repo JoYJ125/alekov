@@ -1,4 +1,6 @@
 import http from 'node:http';
+import {readPcStatus} from './pc-status.mjs';
+import {readWindowsStatus} from './windows-status.mjs';
 import {readFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {resolve} from 'node:path';
@@ -24,7 +26,7 @@ const root=fileURLToPath(new URL('../',import.meta.url));
 const id=value=>typeof value==='string'&&/^[A-Za-z0-9][A-Za-z0-9._:-]{0,79}$/.test(value);
 const record=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
 const text=value=>typeof value==='string'&&value.length<=2000;
-const files=new Map([['/','public/index.html'],['/index.html','public/index.html'],['/app.js','public/app.js'],['/style.css','public/style.css'],['/vulnerabilities-view.mjs','public/vulnerabilities-view.mjs'],['/student/extension.mjs','student/extension.mjs'],
+const files=new Map([['/','public/index.html'],['/index.html','public/index.html'],['/app.js','public/app.js'],['/style.css','public/style.css'],['/pc-dashboard.mjs','public/pc-dashboard.mjs'],['/windows-dashboard.mjs','public/windows-dashboard.mjs'],['/vulnerabilities-view.mjs','public/vulnerabilities-view.mjs'],['/student/extension.mjs','student/extension.mjs'],
   ['/ai-connect.mjs','public/ai-connect.mjs'],
   ...['alekov-ai-explain','alekov-app-icon','alekov-connect-approval','alekov-connection-unknown','alekov-empty-records'].map(name=>[`/assets/alekov/${name}.webp`,`public/assets/alekov/${name}.webp`])]);
 const connectionRoutes=new Map(['start','finish','status','cancel'].map(kind=>[`/api/ai/connect/${kind}`,kind]));
@@ -369,6 +371,12 @@ export function createOnServer(serverOptions={}) {
         try{const data=await bounded(signal=>nativeHost.login[kind]({}, {signal}));assertAlive();send(200,{ok:true,data});}
         catch(error){const code=nativePublicError(error);send(code==='NATIVE_HOST_INPUT_INVALID'?400:code==='NATIVE_HOST_EXPIRED'?410:409,{ok:false,error:{code,message:'현재 로그인 연결을 확인하세요. 자동으로 재시도하지 않습니다.',retryable:false}});}
         return;
+      }
+      if(req.method==='GET'&&url.pathname==='/api/windows-status'){
+        const data=await readWindowsStatus();send(200,{ok:true,data});return;
+      }
+      if(req.method==='GET'&&url.pathname==='/api/pc-status'){
+        const data=await readPcStatus();send(200,{ok:true,data});return;
       }
       if(req.method==='GET'&&files.has(url.pathname)){
         const data=await readFile(resolve(assetsRoot,files.get(url.pathname)));

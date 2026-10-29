@@ -207,3 +207,108 @@ main:focus { outline: none; }
 .state-ok { background: var(--allow-soft); color: var(--allow); }
 .ai-result[data-state="connected"] { border-left: 3px solid var(--allow); padding-left: 12px; }
 .ai-result[data-state="unknown"] { border-left: 3px solid var(--unknown); padding-left: 12px; }
+
+/* 케셰브 통합 다크 관제 테마. 기존 화면 ID/상태 로직은 유지합니다. */
+:root{color-scheme:dark;--bg:#081323;--surface:#101f33;--border:#244359;--text:#e7f6fa;--muted:#9ab4c3;--accent:#57e3cf;--accent-soft:#153a42;--allow:#69e4c5;--allow-soft:#163a35;--deny:#ff8795;--deny-soft:#412633;--challenge:#ffd27d;--challenge-soft:#3d3426;--unknown:#b8c6d5;--unknown-soft:#29364b;--student:#bca7ff;--student-soft:#2c254b;--radius:14px;--focus:0 0 0 3px #59e6d2}
+body{min-width:0;background:var(--bg);color:var(--text)}
+.topbar,.sidebar{background:#0b192b}.topbar{min-height:72px;height:auto}.brand-name{font-size:1.2rem}
+.layout{grid-template-columns:220px minmax(0,1fr)}main{max-width:1600px;width:100%}
+.card,.notice,.pc-card,.pc-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)}
+button,.btn,input,select,textarea{border-radius:10px}
+.btn{background:#163a42;color:var(--text);border:1px solid #32776f}
+#nav [role="tab"][aria-selected="true"]{background:var(--accent-soft);color:var(--accent)}
+.pc-dashboard{margin:18px 0 28px}.pc-heading{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:16px}.pc-heading h1{margin:2px 0 6px;font-size:1.65rem}.pc-eyebrow{font-size:.75rem;letter-spacing:.14em;color:var(--accent);margin:0}
+.pc-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.pc-card{padding:18px;min-width:0;border-top:2px solid #347e83}.pc-card h2{font-size:.85rem;color:var(--muted);font-weight:500}.pc-card strong{display:block;font-size:1.5rem;color:var(--accent);overflow-wrap:anywhere}.pc-card p{font-size:.75rem;color:var(--muted);overflow-wrap:anywhere}
+.pc-lower{display:grid;grid-template-columns:1.2fr 1fr;gap:14px;margin-top:14px}.pc-panel{padding:20px;min-width:0}.pc-panel h2{color:var(--text)}#pc-trend{min-height:160px;display:flex;flex-direction:column;justify-content:center;color:var(--muted)}#pc-trend svg{width:100%;max-height:160px}#pc-log{padding-left:22px;max-height:200px;overflow:auto;font-size:.8rem;color:var(--muted)}#pc-log li{margin-bottom:9px}.pc-source{color:var(--muted);font-size:.8rem}
+.alekov-art{display:none!important}
+@media(max-width:950px){.layout{grid-template-columns:1fr}.sidebar{border-right:0;border-bottom:1px solid var(--border)}#nav{flex-direction:row;flex-wrap:wrap}main{padding:20px}.pc-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.pc-lower{grid-template-columns:1fr}}
+@media(max-width:550px){.topbar{flex-wrap:wrap;padding:14px}.topbar-status{flex-wrap:wrap}.pc-cards{grid-template-columns:1fr}.pc-heading{align-items:flex-start;flex-direction:column}}
+
+/* 한 카드 안의 실측 가로 막대 (예시 사진 참고, 캐릭터 없음) */
+.layout,main,.view,.pc-dashboard,.pc-overview,.pc-lower{min-width:0}
+.pc-overview{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(220px,1fr);gap:14px}
+.pc-status-panel{background:#0d1c2d;border:1px solid #28626b;border-radius:16px;overflow:hidden;min-width:0}
+.pc-status-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid #244c53}
+.pc-status-head h2{margin:0;font-size:1rem}
+.pc-status-badge{border:1px solid #8e742d;color:#f8d37e;padding:4px 9px;border-radius:999px;font-size:.7rem;white-space:nowrap}
+.pc-meter-list{padding:20px 18px 6px;display:grid;gap:22px}
+.pc-meter-row{display:grid;grid-template-columns:112px minmax(0,1fr);gap:16px;align-items:start}
+.pc-meter-label{color:#c5d7e5;font-size:.88rem;padding-top:1px}
+.pc-meter-content{min-width:0}
+.pc-meter-track{height:10px;border-radius:99px;background:#243149;overflow:hidden;position:relative}
+.pc-meter-fill{height:100%;width:0;background:linear-gradient(90deg,#55e4c2,#6a94e7,#9362f0);border-radius:99px;transition:width .35s ease}
+.pc-meter-track.is-unavailable{background:repeating-linear-gradient(45deg,#3c4658 0,#3c4658 6px,#927e42 6px,#927e42 12px)}
+.pc-meter-content strong{display:block;font-size:.93rem;color:#e7f6fa;margin-top:7px;overflow-wrap:anywhere}
+.pc-meter-content p{margin:3px 0 0;color:#9ab4c3;font-size:.77rem;overflow-wrap:anywhere}
+.pc-meter-footnote{padding:4px 20px 16px;color:#9ab4c3;font-size:.77rem}
+.pc-security-panel{padding-bottom:20px}.pc-security-panel>strong{display:block;color:var(--accent);font-size:1.5rem;padding:20px 20px 4px;overflow-wrap:anywhere}.pc-security-panel>p{padding:0 20px;overflow-wrap:anywhere}
+.pc-lower{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
+#pc-log li{overflow-wrap:anywhere}
+@media(max-width:1050px){.pc-overview{grid-template-columns:1fr}}
+@media(max-width:650px){.pc-meter-row{grid-template-columns:1fr;gap:8px}.pc-status-head{align-items:flex-start;flex-direction:column}.pc-lower{grid-template-columns:1fr}}
+
+.windows-dashboard{margin:24px 0;min-width:0}
+.windows-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:14px 0}
+.windows-cards .pc-panel{min-width:0;overflow-wrap:anywhere}
+.windows-cards .pc-panel h3{margin-bottom:12px;color:var(--accent)}
+.windows-warning{padding:12px 16px;border:1px solid #8e742d;border-radius:12px;color:#f8d37e}
+#windows-history{overflow-wrap:anywhere;color:var(--muted)}
+@media(max-width:800px){.windows-cards{grid-template-columns:1fr}}
+
+/* 연결과 기록: 한 장의 상태 요약 카드, 원본 이미지의 장식 캐릭터 제외 */
+.windows-panel{border:1px solid #29636c;border-radius:17px;background:#0d1729;overflow:hidden;max-width:100%;min-width:0}
+.windows-panel-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 18px;border-bottom:1px solid #27525b;background:#10202e}
+.windows-panel-header h2{margin:0;font-size:1rem;color:#edf7fc}
+.windows-pill{border:1px solid #927d38;color:#f2d27c;border-radius:999px;padding:4px 9px;font-size:.72rem;white-space:nowrap}
+.windows-status-list{display:grid;gap:8px;padding:14px 16px 10px}
+.windows-status-row{display:flex;align-items:center;justify-content:space-between;gap:18px;min-width:0;background:#171f35;border-radius:10px;padding:11px 13px}
+.windows-status-row span{color:#b6c5d7;font-size:.86rem}
+.windows-status-row strong{color:#63e7c2;font-size:.85rem;text-align:right;overflow-wrap:anywhere;min-width:0}
+.windows-status-row strong[data-status="warning"]{color:#ffcd65}
+.windows-status-row strong[data-status="unknown"]{color:#e6bf72}
+.windows-status-row strong[data-status="neutral"]{color:#c5b8f9}
+.windows-panel-note{padding:3px 17px 0;color:#b8c7d7;font-size:.8rem}
+.windows-panel .windows-warning{margin:12px 16px;padding:9px 11px;font-size:.78rem}
+.windows-panel-actions{padding:0 16px 15px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.windows-panel-actions #windows-source{color:#a9c2d0;font-size:.75rem;overflow-wrap:anywhere}
+.windows-details{margin:0 16px 16px;border-top:1px solid #28505b;padding-top:12px;color:#b8cbd7}
+.windows-details summary{cursor:pointer;color:#66e4d2;font-size:.86rem}
+.windows-details dl{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;margin:14px 0}
+.windows-details dt{color:#b5c6d8}.windows-details dd{margin:0;overflow-wrap:anywhere;white-space:normal}
+.windows-details h3{font-size:.9rem}
+@media(max-width:650px){.windows-status-row{align-items:flex-start;flex-direction:column;gap:4px}.windows-status-row strong{text-align:left}.windows-details dl{grid-template-columns:1fr;gap:5px}.windows-panel-header{align-items:flex-start;flex-direction:column}}
+
+/* 홈페이지 실행 안내: 실제 실행 여부는 사용자 확인으로만 기록 */
+.run-guide{margin:24px 0;border:1px solid #2b626d;border-radius:18px;background:#0c1728;overflow:hidden;min-width:0}
+.run-guide-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px;border-bottom:1px solid #2b515c}
+.run-guide-head h2{font-size:1.18rem;margin:4px 0}.run-guide-head p{margin:4px 0;color:#a9bdcc;font-size:.88rem}
+.run-guide-badge{border:1px solid #a18538;border-radius:999px;color:#f2d27c;font-size:.75rem;padding:5px 10px;white-space:nowrap}
+.run-guide-columns{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px}
+.run-guide-panel{border:1px solid #2a505e;background:#101e30;border-radius:14px;padding:18px;min-width:0}
+.run-guide-panel h3,.run-guide-help h3{font-size:1rem;margin:0 0 12px}
+.run-guide-panel ol{padding-left:22px;line-height:1.9;font-size:.87rem}
+.run-guide-panel li{margin-bottom:8px;overflow-wrap:anywhere}
+.run-guide-panel code{white-space:normal;overflow-wrap:anywhere;color:#7be9d5}
+.run-guide-note{color:#b9c9d6;font-size:.78rem}
+.run-guide-check label{display:flex;gap:10px;align-items:flex-start;padding:10px 0;font-size:.88rem;cursor:pointer}
+.run-guide-check input{accent-color:#63e7c2;margin-top:3px;flex:none}
+#run-check-result{color:#f2d27c;font-size:.86rem;border-top:1px solid #2b515c;padding-top:12px}
+.run-guide-help{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 20px;border-top:1px solid #2b515c}
+.run-guide-help p{font-size:.84rem;color:#b8cad8;line-height:1.6}
+.run-guide-actions{display:flex;flex-direction:column;align-items:flex-start;gap:10px;flex-shrink:0}
+.run-guide-actions a{color:#75e5d1;font-size:.83rem}
+.run-guide :is(button,input,a):focus-visible{outline:3px solid #f2d27c;outline-offset:3px}
+@media(max-width:850px){.run-guide-columns{grid-template-columns:1fr}.run-guide-help{flex-direction:column;align-items:stretch}.run-guide-actions{flex-direction:row;flex-wrap:wrap}}
+@media(max-width:550px){.run-guide-head{flex-direction:column;align-items:flex-start}}
+
+/* 실행 안내는 보호 현황의 첫 카드이며 기본적으로 접혀 있습니다. */
+.run-guide-disclosure{margin:12px 0 24px;border:1px solid #2b626d;border-radius:16px;background:#0c1728;overflow:hidden}
+.run-guide-disclosure>summary{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px;cursor:pointer;font-weight:700;color:#e8f6fa;list-style:none}
+.run-guide-disclosure>summary::-webkit-details-marker{display:none}
+.run-guide-disclosure>summary::before{content:'▸';color:#65e5d1;margin-right:8px}
+.run-guide-disclosure[open]>summary::before{content:'▾'}
+.run-guide-disclosure>summary>span:first-child{margin-right:auto}
+.run-guide-toggle-hint{font-size:.78rem;color:#91b9c5;font-weight:400}
+.run-guide-disclosure[open]>summary{border-bottom:1px solid #2b515c}
+.run-guide-disclosure .run-guide{margin:0;border:0;border-radius:0}
+.run-guide-disclosure>summary:focus-visible{outline:3px solid #f2d27c;outline-offset:-4px}

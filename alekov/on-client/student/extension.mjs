@@ -1,6 +1,101 @@
+// 학생 영역 전용 요약: 제공 UI의 상태·조회 동작을 덮어쓰지 않습니다.
+function studentPriorityPanel(api, inputs = {}) {
+  const section = document.createElement('section');
+  section.setAttribute('aria-label', '케셰브 학생 구현 핵심 기능');
+  Object.assign(section.style, { background:'#0e1b2d', border:'1px solid #29636c', borderRadius:'16px', padding:'16px', marginBottom:'16px', color:'#e8f6fa' });
+  const title = document.createElement('h3');
+  title.textContent = '내 앱 · 핵심 기능 3가지';
+  title.style.margin = '0 0 12px';
+  section.appendChild(title);
+  const items = [
+    ['기기·세션 보호', inputs.devices, '/api/devices'],
+    ['보안 기록', inputs.events, '/api/events'],
+    ['취약점 점검', inputs.vulnerabilities, '/api/vulnerabilities'],
+  ];
+  const list = document.createElement('ol');
+  Object.assign(list.style, { margin:'0 0 14px', paddingLeft:'24px' });
+  const rows = new Map();
+  for (const [name, resource, path] of items) {
+    const row = document.createElement('li');
+    Object.assign(row.style, { padding:'8px 4px', overflowWrap:'anywhere' });
+    const label = document.createElement('strong');
+    label.textContent = name + ' · ';
+    row.appendChild(label);
+    const value = document.createElement('span');
+    value.textContent = resource?.status === 'ok' && resource?.mode !== 'demo'
+      ? '제공 화면에서 조회됨'
+      : resource?.status === 'loading' ? '대기 중'
+      : resource?.mode === 'demo' ? '예시 자료 · 실제 조회 아님'
+      : resource?.status === 'error' ? '확인 불가 · ' + (resource.error?.message || '조회 실패')
+      : '확인 불가 · 제공 화면에서 확인 필요';
+    row.appendChild(value);
+    list.appendChild(row);
+    rows.set(path, value);
+  }
+  section.appendChild(list);
+  const controls = document.createElement('div');
+  Object.assign(controls.style, { display:'flex', alignItems:'center', flexWrap:'wrap', gap:'10px' });
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.textContent = '다시 조회';
+  button.setAttribute('aria-label', '학생 구현 핵심 기능 세 가지 다시 조회');
+  Object.assign(button.style, { padding:'9px 15px', borderRadius:'10px', border:'1px solid #62e6d0', background:'#23574f', color:'#ffffff', fontWeight:'700', cursor:'pointer' });
+  const pending = document.createElement('span');
+  pending.setAttribute('role','status');
+  pending.setAttribute('aria-live','polite');
+  pending.textContent = '조회 전 · 예시 수치 없음';
+  pending.style.fontSize = '.85rem';
+  controls.append(button,pending);
+  section.appendChild(controls);
+  const errorBox = document.createElement('div');
+  errorBox.setAttribute('role','alert');
+  Object.assign(errorBox.style, { display:'none', background:'#22252c', border:'1px solid #877338', borderRadius:'11px', padding:'12px', marginTop:'12px', color:'#f4d27d', whiteSpace:'pre-wrap', overflowWrap:'anywhere' });
+  section.appendChild(errorBox);
+  button.addEventListener('focus', () => { button.style.outline='3px solid #f4d27d'; button.style.outlineOffset='3px'; });
+  button.addEventListener('blur', () => { button.style.outline=''; button.style.outlineOffset=''; });
+  button.addEventListener('click', async () => {
+    button.disabled = true;
+    button.textContent = '조회 중…';
+    button.style.opacity = '.65';
+    button.setAttribute('aria-busy','true');
+    pending.textContent = '새로 읽는 중…';
+    errorBox.style.display='none';
+    const failures=[];
+    try {
+      await Promise.all(items.map(async ([name,,path]) => {
+        try {
+          const response = await api.get(path);
+          if (response?.ok !== true || response?.meta?.mode === 'demo') {
+            const reason = response?.meta?.mode === 'demo' ? '예시 자료이므로 실측으로 사용할 수 없음'
+              : response?.error?.message || response?.error?.code || '실제 조회 성공을 확인하지 못함';
+            rows.get(path).textContent='확인 불가 · '+reason;
+            failures.push(name+': '+reason);
+          } else {
+            rows.get(path).textContent='응답 수신 · '+new Date().toLocaleString('ko-KR')+' · 상세 결과는 제공 화면에서 확인';
+          }
+        } catch (error) {
+          const reason=String(error?.message || '요청 실패');
+          rows.get(path).textContent='확인 불가 · '+reason;
+          failures.push(name+': '+reason);
+        }
+      }));
+      pending.textContent='조회 종료 · '+new Date().toLocaleString('ko-KR');
+      if (failures.length) {
+        errorBox.style.display='block';
+        errorBox.textContent='조회하지 못한 항목\n'+failures.join('\n')+'\n\n다음 할 일: 서버 연결과 접근 권한을 확인한 뒤 다시 조회를 눌러 주세요.';
+      }
+    } finally {
+      button.disabled=false;
+      button.textContent='다시 조회';
+      button.style.opacity='1';
+      button.removeAttribute('aria-busy');
+    }
+  });
+  return section;
+}
 // 이 파일은 학생이 같은 프로젝트에서 이어서 구현합니다.
 // 제공 UI를 받은 것만으로 단계 완료를 인정하지 않습니다.
-export function createStudentView() {
+export function createStudentView({ api } = {}) {
   return {
     renderIdentity({ me, devices, sessions } = {}) {
       const root = document.createElement('section');
@@ -235,6 +330,7 @@ export function createStudentView() {
     renderStatus({ devices, sessions, notifications, diagnostics, mode } = {}) {
       const root = document.createElement('section');
       root.setAttribute('aria-label', '기기·세션·알림·진단 상태');
+      if (api && typeof api.get === 'function') root.appendChild(studentPriorityPanel(api, { devices, events: undefined, vulnerabilities: undefined }));
       const add = (parent, tag, value) => {
         const node = document.createElement(tag);
         node.textContent = String(value);

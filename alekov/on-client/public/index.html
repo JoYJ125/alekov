@@ -8,13 +8,14 @@
   <title>케셰브 · ZTNA &amp; XDR</title>
   <link rel="stylesheet" href="/style.css">
   <script type="module" src="/app.js"></script>
+  <script type="module" src="/pc-dashboard.mjs"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">본문으로 건너뛰기</a>
 
   <header class="topbar">
     <div class="brand">
-      <img class="alekov-art brand-icon" src="/assets/alekov/alekov-app-icon.webp" alt="" aria-hidden="true" width="32" height="32" draggable="false">
+      
       <span class="brand-mark" id="brand-mark-fallback" aria-hidden="true" hidden>A</span>
       <span class="brand-name">케셰브 <small>ZTNA &amp; XDR 보안 Agent</small></span>
     </div>
@@ -45,7 +46,76 @@
 
       <section id="view-protection" class="view" role="tabpanel" aria-labelledby="tab-protection">
         <h1>보호 현황</h1>
+        <details class="run-guide-disclosure">
+          <summary><span>실행 안내 한 장</span><span class="run-guide-toggle-hint">클릭하거나 Enter로 펼치기</span></summary>
+          <section class="run-guide" aria-labelledby="run-guide-title">
+          <div class="run-guide-head"><div><p class="pc-eyebrow">GETTING STARTED · NO PACKAGE</p><h2 id="run-guide-title">실행 안내 한 장</h2><p>다른 사용자가 이 안내만 보고 케셰브를 실행할 수 있도록 확인합니다.</p></div><span class="run-guide-badge">실행 확인 전</span></div>
+          <div class="run-guide-columns">
+            <div class="run-guide-panel">
+              <h3>따라 하는 순서</h3>
+              <ol>
+                <li>기존 프로젝트 폴더를 엽니다. 저장소 루트에서 <code>alekov\on-client</code>로 이동하세요.</li>
+                <li>PowerShell에서 <code>node --version</code>을 확인합니다. 지원 버전은 Node.js 22~24입니다.</li>
+                <li><code>powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\start-alekov.ps1</code>을 실행합니다.</li>
+                <li>브라우저에서 <code>http://127.0.0.1:5189/</code>를 열고 첫 화면을 확인합니다.</li>
+              </ol>
+              <p class="run-guide-note">설치·포장 명령은 사용하지 않습니다. 기존 폴더와 제출물은 그대로 둡니다.</p>
+            </div>
+            <div class="run-guide-panel run-guide-check">
+              <h3>스스로 확인할 결과</h3>
+              <p>아래 항목은 사용자가 직접 확인하는 체크리스트입니다. 자동 실행 검증 결과가 아닙니다.</p>
+              <label><input type="checkbox" id="run-check-folder"> 프로젝트 폴더와 Node 버전을 확인했어요.</label>
+              <label><input type="checkbox" id="run-check-server"> 실행 명령 후 로컬 서버 시작 메시지를 확인했어요.</label>
+              <label><input type="checkbox" id="run-check-page"> 브라우저에서 첫 화면이 열렸어요.</label>
+              <p id="run-check-result" role="status" aria-live="polite">아직 실행 확인을 완료하지 않았습니다.</p>
+            </div>
+          </div>
+          <div class="run-guide-help">
+            <div><h3>막혔을 때</h3><p>어느 단계에서 막혔는지와 오류 문구를 그대로 기록하세요. Node 버전이 맞지 않으면 지원 버전을 확인하고, 화면이 열리지 않으면 서버 창의 오류를 먼저 확인합니다.</p><p>PC 실측값 조회 성공과 SDP 서버 연결 성공은 별개입니다. 예시 값은 실제 결과가 아닙니다.</p></div>
+            <div class="run-guide-actions"><button type="button" id="run-guide-reset" class="btn">확인 항목 다시 보기</button><a href="https://github.com/JoYJ125/alekov/blob/feature/pc-health-dashboard/alekov/on-client/docs/STUDENT_RUNBOOK.md" target="_blank" rel="noopener noreferrer">상세 실행 안내 보기</a></div>
+          </div>
+        </section>
+        </details>
+<section class="pc-dashboard" aria-labelledby="pc-dashboard-title">
+        <div class="pc-heading"><div><p class="pc-eyebrow">ALEKOV · LOCAL OBSERVABILITY</p><h1 id="pc-dashboard-title">내 PC 상태 관제</h1><p class="muted">실제 로컬 PC 측정값입니다. 보안 서버 연결과는 별개입니다.</p></div><button type="button" id="pc-refresh" class="btn">새로 측정</button></div>
+        <div class="pc-overview">
+          <section class="pc-status-panel" aria-labelledby="pc-status-title">
+            <div class="pc-status-head"><h2 id="pc-status-title">내 PC 상태</h2><span class="pc-status-badge">실제 PC 측정 · 예시 값 아님</span></div>
+            <div class="pc-meter-list">
+              <div class="pc-meter-row"><div class="pc-meter-label">CPU 사용률</div><div class="pc-meter-content"><div class="pc-meter-track" id="pc-cpu-track" role="progressbar" aria-label="CPU 사용률" aria-valuemin="0" aria-valuemax="100" aria-valuetext="확인 불가"><div class="pc-meter-fill" id="pc-cpu-bar"></div></div><strong id="pc-cpu">확인 불가</strong><p id="pc-cpu-detail">측정 전 · 시각 없음</p></div></div>
+              <div class="pc-meter-row"><div class="pc-meter-label">메모리 사용량</div><div class="pc-meter-content"><div class="pc-meter-track" id="pc-memory-track" role="progressbar" aria-label="메모리 사용률" aria-valuemin="0" aria-valuemax="100" aria-valuetext="확인 불가"><div class="pc-meter-fill" id="pc-memory-bar"></div></div><strong id="pc-memory">확인 불가</strong><p id="pc-memory-detail">측정 전 · 시각 없음</p></div></div>
+              <div class="pc-meter-row"><div class="pc-meter-label">디스크 남은 공간</div><div class="pc-meter-content"><div class="pc-meter-track" id="pc-disk-track" role="progressbar" aria-label="디스크 여유 공간 비율" aria-valuemin="0" aria-valuemax="100" aria-valuetext="확인 불가"><div class="pc-meter-fill" id="pc-disk-bar"></div></div><strong id="pc-disk">확인 불가</strong><p id="pc-disk-detail">측정 전 · 시각 없음</p></div></div>
+            </div>
+            <p class="pc-meter-footnote">막대는 실제 측정 비율입니다. 읽을 수 없으면 확인 불가와 이유를 표시합니다.</p>
+          </section>
+          <section class="pc-status-panel pc-security-panel" aria-labelledby="pc-security-title"><div class="pc-status-head"><h2 id="pc-security-title">보안 연결</h2></div><strong id="pc-connection">확인 불가</strong><p id="pc-connection-detail">연결 별도 확인</p><p class="muted">PC 자원 측정 성공은 보안 서버 연결 성공을 뜻하지 않습니다.</p></section>
+        </div>
+        <div class="pc-lower"><section class="pc-panel"><h2>CPU 사용률 추이</h2><div id="pc-trend" aria-live="polite">실측 기록 없음</div></section><section class="pc-panel"><h2>최근 측정 기록</h2><ol id="pc-log" aria-live="polite"></ol></section></div>
+        <p class="pc-source" id="pc-source" role="status">측정 전 · 실제 측정값 없음</p>
+      </section>
 
+<section class="windows-dashboard" aria-labelledby="windows-title">
+  <div class="windows-panel">
+    <div class="windows-panel-header"><h2 id="windows-title">연결과 기록</h2><span class="windows-pill">실제 조회 · 예시 값 아님</span></div>
+    <div class="windows-status-list">
+      <div class="windows-status-row"><span>네트워크 연결</span><strong id="windows-network-summary">확인 불가</strong></div>
+      <div class="windows-status-row"><span>방화벽 설정</span><strong id="windows-firewall-summary">확인 불가</strong></div>
+      <div class="windows-status-row"><span>Windows 경고·오류</span><strong id="windows-events-summary">확인 불가</strong></div>
+      <div class="windows-status-row"><span>SDP 서버</span><strong id="windows-sdp-summary" class="windows-status-warning">SDP 미연결</strong></div>
+    </div>
+    <p class="windows-panel-note">PC 조회 결과와 SDP 연결 상태를 따로 보여 줍니다.</p>
+    <p class="windows-warning">System·Application 경고·오류 건수는 Windows 이벤트 통계이며 침해나 공격 탐지 결과가 아닙니다.</p>
+    <div class="windows-panel-actions"><button type="button" id="windows-refresh" class="btn">Windows 상태 조회</button><span id="windows-source">조회 전 · 실제 측정값 없음</span></div>
+    <details class="windows-details"><summary>조회 상세 정보와 최근 기록</summary>
+      <dl><dt>네트워크</dt><dd id="windows-network">확인 불가 · 조회 전</dd>
+      <dt>방화벽</dt><dd id="windows-firewall">확인 불가 · 조회 전</dd>
+      <dt>Windows 기록</dt><dd id="windows-events">확인 불가 · 조회 전</dd>
+      <dt>SDP</dt><dd id="windows-sdp">SDP 미연결 · 실제 연결 미확인</dd></dl>
+      <h3>최근 조회 기록</h3><ol id="windows-history"></ol>
+    </details>
+  </div>
+</section>
+        
         <div class="grid-2">
           <section class="card provided" aria-labelledby="identity-title">
             <h2 id="identity-title">현재 로그인 <span class="tag">제공</span></h2>
