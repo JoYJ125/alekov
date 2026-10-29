@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="/style.css">
   <script type="module" src="/app.js"></script>
   <script type="module" src="/pc-dashboard.mjs"></script>
+  <script type="module" src="/windows-dashboard.mjs"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">본문으로 건너뛰기</a>
@@ -64,6 +65,19 @@
         <p class="pc-source" id="pc-source" role="status">측정 전 · 실제 측정값 없음</p>
       </section>
 
+<section class="windows-dashboard" aria-labelledby="windows-title">
+<h2 id="windows-title">Windows 상태 진단 <span class="tag">읽기 전용</span></h2>
+<button type="button" id="windows-refresh" class="btn">Windows 상태 조회</button>
+<div class="windows-cards">
+<section class="pc-panel"><h3>네트워크 구성</h3><div id="windows-network">확인 불가 · 조회 전</div></section>
+<section class="pc-panel"><h3>방화벽 설정</h3><div id="windows-firewall">확인 불가 · 조회 전</div></section>
+<section class="pc-panel"><h3>Windows 기록 · 최근 24시간</h3><div id="windows-events">확인 불가 · 조회 전</div></section>
+<section class="pc-panel"><h3>SDP 연결</h3><div id="windows-sdp">SDP 미연결 · 실제 연결 미확인</div></section>
+</div>
+<p class="windows-warning">System·Application 경고·오류 건수는 Windows 이벤트 통계이며 침해나 공격 탐지 결과가 아닙니다.</p>
+<p id="windows-source" class="pc-source">조회 전 · 실제 측정값 없음 · 예시 값 없음</p>
+<div class="pc-panel"><h3>최근 조회 기록</h3><ol id="windows-history"></ol></div>
+</section>
         <div class="grid-2">
           <section class="card provided" aria-labelledby="identity-title">
             <h2 id="identity-title">현재 로그인 <span class="tag">제공</span></h2>
