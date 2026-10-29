@@ -67,3 +67,31 @@ async function measure(){
 }
 $('pc-refresh')?.addEventListener('click',measure);
 measure();
+
+const winText=(id,value)=>{$(id).textContent=value};
+const winTime=v=>v?new Date(v).toLocaleString('ko-KR'):'시각 없음';
+async function refreshWindows(){
+  const button=$('windows-refresh');if(!button)return;
+  button.disabled=true;
+  try{
+    const response=await fetch('/api/windows-status',{cache:'no-store'});
+    if(!response.ok)throw Error('HTTP '+response.status);
+    const json=await response.json();
+    if(json.ok!==true||!json.data)throw Error('응답 확인 실패');
+    const d=json.data,n=d.network,f=d.firewall,e=d.events;
+    winText('windows-network',n.status==='ok'?'실제 조회 · '+winTime(n.measuredAt)+' · 어댑터 '+n.adapters.length+'개 · '+n.adapters.map(a=>a.name+' '+a.family+' '+a.address).join(' / ')+' · DNS '+n.dns.join(', '):'확인 불가 · '+n.reason+' · '+winTime(n.measuredAt));
+    winText('windows-firewall',f.status==='ok'?'실제 조회 · '+winTime(f.measuredAt)+' · '+f.profiles.map(p=>p.name+': '+(p.enabled?'켜짐':'꺼짐')).join(' / '):'확인 불가 · '+f.reason+' · '+winTime(f.measuredAt));
+    winText('windows-events',e.status==='ok'?'실제 조회 · '+winTime(e.measuredAt)+' · 최근 24시간 · '+e.counts.map(x=>x.log+' 경고 '+x.warning+'건 / 오류 '+x.error+'건').join(' / '):'확인 불가 · '+e.reason+' · '+winTime(e.measuredAt));
+    winText('windows-sdp','SDP 미연결 · 실제 SDP 서버 연결이 확인되지 않았습니다');
+    winText('windows-source','실제 로컬 Windows 조회 · '+winTime(d.measuredAt)+' · 예시 값 없음');
+    const li=document.createElement('li');
+    li.textContent=winTime(d.measuredAt)+' · 네트워크 '+n.status+' / 방화벽 '+f.status+' / 이벤트 '+e.status+' / SDP 미연결';
+    const history=$('windows-history');history.prepend(li);while(history.children.length>10)history.lastElementChild.remove();
+  }catch(error){
+    const message='확인 불가 · 조회 실패: '+String(error.message).slice(0,100);
+    for(const id of ['windows-network','windows-firewall','windows-events'])winText(id,message);
+    winText('windows-sdp','SDP 미연결 · 실제 SDP 서버 연결 미확인');
+    winText('windows-source','조회 실패 · '+winTime(new Date().toISOString()));
+  }finally{button.disabled=false;}
+}
+$('windows-refresh')?.addEventListener('click',refreshWindows);
