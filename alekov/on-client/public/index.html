@@ -65,17 +65,25 @@
       </section>
 
 <section class="windows-dashboard" aria-labelledby="windows-title">
-<h2 id="windows-title">Windows 상태 진단 <span class="tag">읽기 전용</span></h2>
-<button type="button" id="windows-refresh" class="btn">Windows 상태 조회</button>
-<div class="windows-cards">
-<section class="pc-panel"><h3>네트워크 구성</h3><div id="windows-network">확인 불가 · 조회 전</div></section>
-<section class="pc-panel"><h3>방화벽 설정</h3><div id="windows-firewall">확인 불가 · 조회 전</div></section>
-<section class="pc-panel"><h3>Windows 기록 · 최근 24시간</h3><div id="windows-events">확인 불가 · 조회 전</div></section>
-<section class="pc-panel"><h3>SDP 연결</h3><div id="windows-sdp">SDP 미연결 · 실제 연결 미확인</div></section>
-</div>
-<p class="windows-warning">System·Application 경고·오류 건수는 Windows 이벤트 통계이며 침해나 공격 탐지 결과가 아닙니다.</p>
-<p id="windows-source" class="pc-source">조회 전 · 실제 측정값 없음 · 예시 값 없음</p>
-<div class="pc-panel"><h3>최근 조회 기록</h3><ol id="windows-history"></ol></div>
+  <div class="windows-panel">
+    <div class="windows-panel-header"><h2 id="windows-title">연결과 기록</h2><span class="windows-pill">실제 조회 · 예시 값 아님</span></div>
+    <div class="windows-status-list">
+      <div class="windows-status-row"><span>네트워크 연결</span><strong id="windows-network-summary">확인 불가</strong></div>
+      <div class="windows-status-row"><span>방화벽 설정</span><strong id="windows-firewall-summary">확인 불가</strong></div>
+      <div class="windows-status-row"><span>Windows 경고·오류</span><strong id="windows-events-summary">확인 불가</strong></div>
+      <div class="windows-status-row"><span>SDP 서버</span><strong id="windows-sdp-summary" class="windows-status-warning">SDP 미연결</strong></div>
+    </div>
+    <p class="windows-panel-note">PC 조회 결과와 SDP 연결 상태를 따로 보여 줍니다.</p>
+    <p class="windows-warning">System·Application 경고·오류 건수는 Windows 이벤트 통계이며 침해나 공격 탐지 결과가 아닙니다.</p>
+    <div class="windows-panel-actions"><button type="button" id="windows-refresh" class="btn">Windows 상태 조회</button><span id="windows-source">조회 전 · 실제 측정값 없음</span></div>
+    <details class="windows-details"><summary>조회 상세 정보와 최근 기록</summary>
+      <dl><dt>네트워크</dt><dd id="windows-network">확인 불가 · 조회 전</dd>
+      <dt>방화벽</dt><dd id="windows-firewall">확인 불가 · 조회 전</dd>
+      <dt>Windows 기록</dt><dd id="windows-events">확인 불가 · 조회 전</dd>
+      <dt>SDP</dt><dd id="windows-sdp">SDP 미연결 · 실제 연결 미확인</dd></dl>
+      <h3>최근 조회 기록</h3><ol id="windows-history"></ol>
+    </details>
+  </div>
 </section>
         <div class="grid-2">
           <section class="card provided" aria-labelledby="identity-title">
