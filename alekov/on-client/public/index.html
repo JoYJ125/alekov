@@ -85,6 +85,33 @@
     </details>
   </div>
 </section>
+        <section class="run-guide" aria-labelledby="run-guide-title">
+          <div class="run-guide-head"><div><p class="pc-eyebrow">GETTING STARTED · NO PACKAGE</p><h2 id="run-guide-title">실행 안내 한 장</h2><p>다른 사용자가 이 안내만 보고 케셰브를 실행할 수 있도록 확인합니다.</p></div><span class="run-guide-badge">실행 확인 전</span></div>
+          <div class="run-guide-columns">
+            <div class="run-guide-panel">
+              <h3>따라 하는 순서</h3>
+              <ol>
+                <li>기존 프로젝트 폴더를 엽니다. 저장소 루트에서 <code>alekov\on-client</code>로 이동하세요.</li>
+                <li>PowerShell에서 <code>node --version</code>을 확인합니다. 지원 버전은 Node.js 22~24입니다.</li>
+                <li><code>powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\start-alekov.ps1</code>을 실행합니다.</li>
+                <li>브라우저에서 <code>http://127.0.0.1:5189/</code>를 열고 첫 화면을 확인합니다.</li>
+              </ol>
+              <p class="run-guide-note">설치·포장 명령은 사용하지 않습니다. 기존 폴더와 제출물은 그대로 둡니다.</p>
+            </div>
+            <div class="run-guide-panel run-guide-check">
+              <h3>스스로 확인할 결과</h3>
+              <p>아래 항목은 사용자가 직접 확인하는 체크리스트입니다. 자동 실행 검증 결과가 아닙니다.</p>
+              <label><input type="checkbox" id="run-check-folder"> 프로젝트 폴더와 Node 버전을 확인했어요.</label>
+              <label><input type="checkbox" id="run-check-server"> 실행 명령 후 로컬 서버 시작 메시지를 확인했어요.</label>
+              <label><input type="checkbox" id="run-check-page"> 브라우저에서 첫 화면이 열렸어요.</label>
+              <p id="run-check-result" role="status" aria-live="polite">아직 실행 확인을 완료하지 않았습니다.</p>
+            </div>
+          </div>
+          <div class="run-guide-help">
+            <div><h3>막혔을 때</h3><p>어느 단계에서 막혔는지와 오류 문구를 그대로 기록하세요. Node 버전이 맞지 않으면 지원 버전을 확인하고, 화면이 열리지 않으면 서버 창의 오류를 먼저 확인합니다.</p><p>PC 실측값 조회 성공과 SDP 서버 연결 성공은 별개입니다. 예시 값은 실제 결과가 아닙니다.</p></div>
+            <div class="run-guide-actions"><button type="button" id="run-guide-reset" class="btn">확인 항목 다시 보기</button><a href="https://github.com/JoYJ125/alekov/blob/feature/pc-health-dashboard/alekov/on-client/docs/STUDENT_RUNBOOK.md" target="_blank" rel="noopener noreferrer">상세 실행 안내 보기</a></div>
+          </div>
+        </section>
         <div class="grid-2">
           <section class="card provided" aria-labelledby="identity-title">
             <h2 id="identity-title">현재 로그인 <span class="tag">제공</span></h2>
