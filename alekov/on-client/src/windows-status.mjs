@@ -1,5 +1,6 @@
 // Windows 진단: 고정된 읽기 전용 명령만 실행. 권한 상승·설정 변경 없음.
 import os from 'node:os';
+import dns from 'node:dns';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 const execFileAsync=promisify(execFile);
@@ -24,7 +25,7 @@ export async function readWindowsStatus(){
   }
   try{
     const adapters=Object.entries(os.networkInterfaces()).flatMap(([name,entries])=>(entries||[]).filter(v=>!v.internal).map(v=>({name,family:v.family,address:v.address}))).slice(0,20);
-    const dns=os.getServers().slice(0,8);
+    const dns=dns.getServers().slice(0,8);
     result.network={status:'ok',measuredAt:new Date().toISOString(),adapters,dns,unit:'개'};
   }catch(e){result.network=unknown('네트워크 조회 실패: '+String(e.message).slice(0,100));}
   try{
@@ -32,7 +33,7 @@ export async function readWindowsStatus(){
     result.firewall={status:'ok',measuredAt:new Date().toISOString(),profiles:Array.isArray(profiles)?profiles:[profiles],readOnly:true};
   }catch(e){result.firewall=unknown(errorText(e));}
   try{
-    const script="$ErrorActionPreference='Stop'; $since=(Get-Date).AddHours(-24); $out=@(); foreach($log in @('System','Application')) { $items=@(Get-WinEvent -FilterHashtable @{LogName=$log;StartTime=$since;Level=@(2,3)} -ErrorAction Stop); $out+= [pscustomobject]@{log=$log;warning=@($items | Where-Object Level -eq 3).Count;error=@($items | Where-Object Level -eq 2).Count} }; $out | ConvertTo-Json -Compress";
+    const script="$ErrorActionPreference='Stop'; $since=(Get-Date).AddHours(-24); $out=@(); foreach($log in @('System','Application')) { $items=@(Get-WinEvent -FilterHashtable @{LogName=$log;StartTime=$since;Level=@(2,3)} -ErrorAction SilentlyContinue); $out+= [pscustomobject]@{log=$log;warning=@($items | Where-Object Level -eq 3).Count;error=@($items | Where-Object Level -eq 2).Count} }; $out | ConvertTo-Json -Compress";
     const counts=await ps(script);
     result.events={status:'ok',measuredAt:new Date().toISOString(),windowHours:24,unit:'건',counts:Array.isArray(counts)?counts:[counts],disclaimer:'Windows 경고·오류 건수는 운영체제 이벤트 통계이며, 침해나 공격 탐지 결과가 아닙니다.'};
   }catch(e){result.events=unknown(errorText(e));}
