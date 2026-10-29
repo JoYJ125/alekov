@@ -1,6 +1,69 @@
+// 학생 영역 전용 요약: 제공 UI의 상태·조회 동작을 덮어쓰지 않습니다.
+function studentPriorityPanel(api, inputs = {}) {
+  const section = document.createElement('section');
+  section.setAttribute('aria-label', '케셰브 핵심 기능 세 가지');
+  const heading = document.createElement('h3');
+  heading.textContent = '핵심 기능 · 3가지';
+  section.appendChild(heading);
+  const items = [
+    ['기기·세션 보호', inputs.devices, '/api/devices'],
+    ['보안 기록', inputs.events, '/api/events'],
+    ['취약점 점검', inputs.vulnerabilities, '/api/vulnerabilities'],
+  ];
+  const list = document.createElement('ol');
+  section.appendChild(list);
+  const statusText = resource => {
+    if (!resource) return '확인 불가 · 제공 화면에서 상태를 확인하세요';
+    if (resource.mode === 'demo') return '예시 자료 · 실측 결과 아님';
+    if (resource.status === 'loading') return '조회 대기 중';
+    if (resource.status === 'error') return '확인 불가 · ' + (resource.error?.message || '조회 실패') + ' · 제공 화면의 연결 상태를 확인하세요';
+    if (resource.status === 'ok') return '제공 화면 조회 완료 · 상세 결과는 제공 화면에서 확인';
+    return '확인 불가 · 제공 화면에서 조회하세요';
+  };
+  for (const [name, resource] of items) {
+    const li = document.createElement('li');
+    li.textContent = name + ' — ' + statusText(resource);
+    list.appendChild(li);
+  }
+  const note = document.createElement('p');
+  note.textContent = '아래 버튼은 학생 요약의 연결 확인만 다시 수행합니다. 제공 화면의 원본 데이터와 조회 버튼은 변경하지 않습니다.';
+  section.appendChild(note);
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.textContent = '다시 조회';
+  const feedback = document.createElement('p');
+  feedback.setAttribute('role', 'status');
+  feedback.setAttribute('aria-live', 'polite');
+  feedback.textContent = '조회 전 · 예시 값 없음';
+  button.addEventListener('click', async () => {
+    button.disabled = true;
+    button.textContent = '조회 중…';
+    feedback.textContent = '학생 요약 연결 확인 중… 이전 결과는 현재 실측값이 아닙니다.';
+    try {
+      const paths = ['/api/devices', '/api/events', '/api/vulnerabilities'];
+      const results = await Promise.all(paths.map(async path => {
+        try {
+          const result = await api.get(path);
+          if (result?.ok === false || result?.status === 'error' || result?.error) {
+            return path + ': 확인 불가 · ' + (result?.error?.message || result?.error?.code || '조회 실패') + ' · 제공 화면에서 연결과 권한을 확인하세요';
+          }
+          return path + ': 응답 수신 · 실제 값의 의미는 제공 화면에서 확인';
+        } catch (error) {
+          return path + ': 확인 불가 · ' + (error?.message || '요청 실패') + ' · 서버 연결을 확인하세요';
+        }
+      }));
+      feedback.textContent = new Date().toLocaleString('ko-KR') + ' · ' + results.join(' / ');
+    } finally {
+      button.disabled = false;
+      button.textContent = '다시 조회';
+    }
+  });
+  section.append(button, feedback);
+  return section;
+}
 // 이 파일은 학생이 같은 프로젝트에서 이어서 구현합니다.
 // 제공 UI를 받은 것만으로 단계 완료를 인정하지 않습니다.
-export function createStudentView() {
+export function createStudentView({ api } = {}) {
   return {
     renderIdentity({ me, devices, sessions } = {}) {
       const root = document.createElement('section');
@@ -235,6 +298,7 @@ export function createStudentView() {
     renderStatus({ devices, sessions, notifications, diagnostics, mode } = {}) {
       const root = document.createElement('section');
       root.setAttribute('aria-label', '기기·세션·알림·진단 상태');
+      if (api && typeof api.get === 'function') root.appendChild(studentPriorityPanel(api, { devices, events: undefined, vulnerabilities: undefined }));
       const add = (parent, tag, value) => {
         const node = document.createElement(tag);
         node.textContent = String(value);
