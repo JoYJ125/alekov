@@ -8,13 +8,14 @@
   <title>케셰브 · ZTNA &amp; XDR</title>
   <link rel="stylesheet" href="/style.css">
   <script type="module" src="/app.js"></script>
+  <script type="module" src="/pc-dashboard.mjs"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">본문으로 건너뛰기</a>
 
   <header class="topbar">
     <div class="brand">
-      <img class="alekov-art brand-icon" src="/assets/alekov/alekov-app-icon.webp" alt="" aria-hidden="true" width="32" height="32" draggable="false">
+      
       <span class="brand-mark" id="brand-mark-fallback" aria-hidden="true" hidden>A</span>
       <span class="brand-name">케셰브 <small>ZTNA &amp; XDR 보안 Agent</small></span>
     </div>
@@ -45,6 +46,17 @@
 
       <section id="view-protection" class="view" role="tabpanel" aria-labelledby="tab-protection">
         <h1>보호 현황</h1>
+<section class="pc-dashboard" aria-labelledby="pc-dashboard-title">
+        <div class="pc-heading"><div><p class="pc-eyebrow">ALEKOV · LOCAL OBSERVABILITY</p><h1 id="pc-dashboard-title">내 PC 상태 관제</h1><p class="muted">실제 로컬 PC 측정값입니다. 보안 서버 연결과는 별개입니다.</p></div><button type="button" id="pc-refresh" class="btn">새로 측정</button></div>
+        <div class="pc-cards">
+          <section class="pc-card"><h2>CPU 사용률</h2><strong id="pc-cpu">확인 불가</strong><p id="pc-cpu-detail">측정 전 · 시각 없음</p></section>
+          <section class="pc-card"><h2>메모리 사용량</h2><strong id="pc-memory">확인 불가</strong><p id="pc-memory-detail">측정 전 · 시각 없음</p></section>
+          <section class="pc-card"><h2>디스크 여유 공간</h2><strong id="pc-disk">확인 불가</strong><p id="pc-disk-detail">측정 전 · 시각 없음</p></section>
+          <section class="pc-card"><h2>보안 연결</h2><strong id="pc-connection">확인 불가</strong><p id="pc-connection-detail">연결 별도 확인</p></section>
+        </div>
+        <div class="pc-lower"><section class="pc-panel"><h2>CPU 사용률 추이</h2><div id="pc-trend" aria-live="polite">실측 기록 없음</div></section><section class="pc-panel"><h2>최근 측정 기록</h2><ol id="pc-log" aria-live="polite"></ol></section></div>
+        <p class="pc-source" id="pc-source" role="status">측정 전 · 실제 측정값 없음</p>
+      </section>
 
         <div class="grid-2">
           <section class="card provided" aria-labelledby="identity-title">
