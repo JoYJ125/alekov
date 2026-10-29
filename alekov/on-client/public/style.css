@@ -223,3 +223,26 @@ button,.btn,input,select,textarea{border-radius:10px}
 .alekov-art{display:none!important}
 @media(max-width:950px){.layout{grid-template-columns:1fr}.sidebar{border-right:0;border-bottom:1px solid var(--border)}#nav{flex-direction:row;flex-wrap:wrap}main{padding:20px}.pc-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.pc-lower{grid-template-columns:1fr}}
 @media(max-width:550px){.topbar{flex-wrap:wrap;padding:14px}.topbar-status{flex-wrap:wrap}.pc-cards{grid-template-columns:1fr}.pc-heading{align-items:flex-start;flex-direction:column}}
+
+/* 한 카드 안의 실측 가로 막대 (예시 사진 참고, 캐릭터 없음) */
+.layout,main,.view,.pc-dashboard,.pc-overview,.pc-lower{min-width:0}
+.pc-overview{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(220px,1fr);gap:14px}
+.pc-status-panel{background:#0d1c2d;border:1px solid #28626b;border-radius:16px;overflow:hidden;min-width:0}
+.pc-status-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid #244c53}
+.pc-status-head h2{margin:0;font-size:1rem}
+.pc-status-badge{border:1px solid #8e742d;color:#f8d37e;padding:4px 9px;border-radius:999px;font-size:.7rem;white-space:nowrap}
+.pc-meter-list{padding:20px 18px 6px;display:grid;gap:22px}
+.pc-meter-row{display:grid;grid-template-columns:112px minmax(0,1fr);gap:16px;align-items:start}
+.pc-meter-label{color:#c5d7e5;font-size:.88rem;padding-top:1px}
+.pc-meter-content{min-width:0}
+.pc-meter-track{height:10px;border-radius:99px;background:#243149;overflow:hidden;position:relative}
+.pc-meter-fill{height:100%;width:0;background:linear-gradient(90deg,#55e4c2,#6a94e7,#9362f0);border-radius:99px;transition:width .35s ease}
+.pc-meter-track.is-unavailable{background:repeating-linear-gradient(45deg,#3c4658 0,#3c4658 6px,#927e42 6px,#927e42 12px)}
+.pc-meter-content strong{display:block;font-size:.93rem;color:#e7f6fa;margin-top:7px;overflow-wrap:anywhere}
+.pc-meter-content p{margin:3px 0 0;color:#9ab4c3;font-size:.77rem;overflow-wrap:anywhere}
+.pc-meter-footnote{padding:4px 20px 16px;color:#9ab4c3;font-size:.77rem}
+.pc-security-panel{padding-bottom:20px}.pc-security-panel>strong{display:block;color:var(--accent);font-size:1.5rem;padding:20px 20px 4px;overflow-wrap:anywhere}.pc-security-panel>p{padding:0 20px;overflow-wrap:anywhere}
+.pc-lower{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
+#pc-log li{overflow-wrap:anywhere}
+@media(max-width:1050px){.pc-overview{grid-template-columns:1fr}}
+@media(max-width:650px){.pc-meter-row{grid-template-columns:1fr;gap:8px}.pc-status-head{align-items:flex-start;flex-direction:column}.pc-lower{grid-template-columns:1fr}}
