@@ -109,3 +109,25 @@ async function refreshWindows(){
   }finally{button.disabled=false;}
 }
 $('windows-refresh')?.addEventListener('click',refreshWindows);
+
+/* 홈페이지 실행 안내: 사용자가 직접 확인한 체크만 표시, 서버/SDP 성공으로 추정하지 않음. */
+const runChecks=['run-check-folder','run-check-server','run-check-page'].map(id=>$(id)).filter(Boolean);
+function updateRunChecklist(){
+  const done=runChecks.filter(input=>input.checked).length;
+  const result=$('run-check-result'),badge=document.querySelector('.run-guide-badge');
+  if(!result||!badge)return;
+  if(done===runChecks.length&&runChecks.length===3){
+    result.textContent='사용자 확인 완료 · 3/3개 항목. 실제 재현 성공 여부는 실행한 사람의 기록으로 검증하세요.';
+    badge.textContent='사용자 확인 3/3';
+  }else{
+    result.textContent='사용자 확인 '+done+'/3 · 아직 실행 검증을 완료하지 않았습니다.';
+    badge.textContent='실행 확인 전';
+  }
+}
+for(const checkbox of runChecks)checkbox.addEventListener('change',updateRunChecklist);
+$('run-guide-reset')?.addEventListener('click',()=>{
+  for(const checkbox of runChecks)checkbox.checked=false;
+  updateRunChecklist();
+  runChecks[0]?.focus();
+});
+updateRunChecklist();
