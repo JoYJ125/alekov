@@ -82,6 +82,19 @@ async function refreshWindows(){
     winText('windows-network',n.status==='ok'?'실제 조회 · '+winTime(n.measuredAt)+' · 어댑터 '+n.adapters.length+'개 · '+n.adapters.map(a=>a.name+' '+a.family+' '+a.address).join(' / ')+' · DNS '+n.dns.join(', '):'확인 불가 · '+n.reason+' · '+winTime(n.measuredAt));
     winText('windows-firewall',f.status==='ok'?'실제 조회 · '+winTime(f.measuredAt)+' · '+f.profiles.map(p=>p.name+': '+(p.enabled?'켜짐':'꺼짐')).join(' / '):'확인 불가 · '+f.reason+' · '+winTime(f.measuredAt));
     winText('windows-events',e.status==='ok'?'실제 조회 · '+winTime(e.measuredAt)+' · 최근 24시간 · '+e.counts.map(x=>x.log+' 경고 '+x.warning+'건 / 오류 '+x.error+'건').join(' / '):'확인 불가 · '+e.reason+' · '+winTime(e.measuredAt));
+    const netOk=n.status==='ok',fwOk=f.status==='ok',evOk=e.status==='ok';
+    const netSummary=netOk?(n.adapters.length>0?'어댑터 '+n.adapters.length+'개 조회':'연결 확인 불가'):'확인 불가';
+    const fwSummary=fwOk?f.profiles.map(p=>p.name+' '+(p.enabled?'켜짐':'꺼짐')).join(' · '):'확인 불가';
+    const eventTotal=evOk?e.counts.reduce((sum,x)=>sum+Number(x.warning||0)+Number(x.error||0),0):null;
+    const eventSummary=evOk?'경고·오류 '+eventTotal+'건 · 침해 판정 아님':'확인 불가';
+    for(const [id,label,kind] of [
+      ['windows-network-summary',netSummary,netOk?'ok':'unknown'],
+      ['windows-firewall-summary',fwSummary,fwOk?'ok':'unknown'],
+      ['windows-events-summary',eventSummary,evOk?'neutral':'unknown'],
+      ['windows-sdp-summary','SDP 미연결','warning']
+    ]){
+      const el=$(id);if(!el)continue;el.textContent=label;el.dataset.status=kind;
+    }
     winText('windows-sdp','SDP 미연결 · 실제 SDP 서버 연결이 확인되지 않았습니다');
     winText('windows-source','실제 로컬 Windows 조회 · '+winTime(d.measuredAt)+' · 예시 값 없음');
     const li=document.createElement('li');
@@ -90,6 +103,7 @@ async function refreshWindows(){
   }catch(error){
     const message='확인 불가 · 조회 실패: '+String(error.message).slice(0,100);
     for(const id of ['windows-network','windows-firewall','windows-events'])winText(id,message);
+    for(const id of ['windows-network-summary','windows-firewall-summary','windows-events-summary']){const el=$(id);if(el){el.textContent='확인 불가';el.dataset.status='unknown';}}
     winText('windows-sdp','SDP 미연결 · 실제 SDP 서버 연결 미확인');
     winText('windows-source','조회 실패 · '+winTime(new Date().toISOString()));
   }finally{button.disabled=false;}
