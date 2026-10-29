@@ -300,3 +300,15 @@ button,.btn,input,select,textarea{border-radius:10px}
 .run-guide :is(button,input,a):focus-visible{outline:3px solid #f2d27c;outline-offset:3px}
 @media(max-width:850px){.run-guide-columns{grid-template-columns:1fr}.run-guide-help{flex-direction:column;align-items:stretch}.run-guide-actions{flex-direction:row;flex-wrap:wrap}}
 @media(max-width:550px){.run-guide-head{flex-direction:column;align-items:flex-start}}
+
+/* 실행 안내는 보호 현황의 첫 카드이며 기본적으로 접혀 있습니다. */
+.run-guide-disclosure{margin:12px 0 24px;border:1px solid #2b626d;border-radius:16px;background:#0c1728;overflow:hidden}
+.run-guide-disclosure>summary{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px;cursor:pointer;font-weight:700;color:#e8f6fa;list-style:none}
+.run-guide-disclosure>summary::-webkit-details-marker{display:none}
+.run-guide-disclosure>summary::before{content:'▸';color:#65e5d1;margin-right:8px}
+.run-guide-disclosure[open]>summary::before{content:'▾'}
+.run-guide-disclosure>summary>span:first-child{margin-right:auto}
+.run-guide-toggle-hint{font-size:.78rem;color:#91b9c5;font-weight:400}
+.run-guide-disclosure[open]>summary{border-bottom:1px solid #2b515c}
+.run-guide-disclosure .run-guide{margin:0;border:0;border-radius:0}
+.run-guide-disclosure>summary:focus-visible{outline:3px solid #f2d27c;outline-offset:-4px}
