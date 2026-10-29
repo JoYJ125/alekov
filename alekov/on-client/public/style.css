@@ -207,3 +207,19 @@ main:focus { outline: none; }
 .state-ok { background: var(--allow-soft); color: var(--allow); }
 .ai-result[data-state="connected"] { border-left: 3px solid var(--allow); padding-left: 12px; }
 .ai-result[data-state="unknown"] { border-left: 3px solid var(--unknown); padding-left: 12px; }
+
+/* 케셰브 통합 다크 관제 테마. 기존 화면 ID/상태 로직은 유지합니다. */
+:root{color-scheme:dark;--bg:#081323;--surface:#101f33;--border:#244359;--text:#e7f6fa;--muted:#9ab4c3;--accent:#57e3cf;--accent-soft:#153a42;--allow:#69e4c5;--allow-soft:#163a35;--deny:#ff8795;--deny-soft:#412633;--challenge:#ffd27d;--challenge-soft:#3d3426;--unknown:#b8c6d5;--unknown-soft:#29364b;--student:#bca7ff;--student-soft:#2c254b;--radius:14px;--focus:0 0 0 3px #59e6d2}
+body{min-width:0;background:var(--bg);color:var(--text)}
+.topbar,.sidebar{background:#0b192b}.topbar{min-height:72px;height:auto}.brand-name{font-size:1.2rem}
+.layout{grid-template-columns:220px minmax(0,1fr)}main{max-width:1600px;width:100%}
+.card,.notice,.pc-card,.pc-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)}
+button,.btn,input,select,textarea{border-radius:10px}
+.btn{background:#163a42;color:var(--text);border:1px solid #32776f}
+#nav [role="tab"][aria-selected="true"]{background:var(--accent-soft);color:var(--accent)}
+.pc-dashboard{margin:18px 0 28px}.pc-heading{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:16px}.pc-heading h1{margin:2px 0 6px;font-size:1.65rem}.pc-eyebrow{font-size:.75rem;letter-spacing:.14em;color:var(--accent);margin:0}
+.pc-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.pc-card{padding:18px;min-width:0;border-top:2px solid #347e83}.pc-card h2{font-size:.85rem;color:var(--muted);font-weight:500}.pc-card strong{display:block;font-size:1.5rem;color:var(--accent);overflow-wrap:anywhere}.pc-card p{font-size:.75rem;color:var(--muted);overflow-wrap:anywhere}
+.pc-lower{display:grid;grid-template-columns:1.2fr 1fr;gap:14px;margin-top:14px}.pc-panel{padding:20px;min-width:0}.pc-panel h2{color:var(--text)}#pc-trend{min-height:160px;display:flex;flex-direction:column;justify-content:center;color:var(--muted)}#pc-trend svg{width:100%;max-height:160px}#pc-log{padding-left:22px;max-height:200px;overflow:auto;font-size:.8rem;color:var(--muted)}#pc-log li{margin-bottom:9px}.pc-source{color:var(--muted);font-size:.8rem}
+.alekov-art{display:none!important}
+@media(max-width:950px){.layout{grid-template-columns:1fr}.sidebar{border-right:0;border-bottom:1px solid var(--border)}#nav{flex-direction:row;flex-wrap:wrap}main{padding:20px}.pc-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.pc-lower{grid-template-columns:1fr}}
+@media(max-width:550px){.topbar{flex-wrap:wrap;padding:14px}.topbar-status{flex-wrap:wrap}.pc-cards{grid-template-columns:1fr}.pc-heading{align-items:flex-start;flex-direction:column}}
